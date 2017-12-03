@@ -83,60 +83,36 @@ function TestElement.test_children()
                        "<child1/><child2/>")
 end
 
-function TestElement.test_content()
-  local document = xmlua.XML.parse([[
-<root>
-  text1
-  <child1>text1-1</child1>
-  text2
-  <child2>text2-1</child2>
-  text3
-</root>
-]])
-  local root = document:root()
-  luaunit.assertEquals(root:content(),
-                       [[
-
-  text1
-  text1-1
-  text2
-  text2-1
-  text3
-]])
-end
-
-function TestElement.test_text()
-  local document = xmlua.XML.parse([[
-<root>
-  text1
-  <child1>text1-1</child1>
-  text2
-  <child2>text2-1</child2>
-  text3
-</root>
-]])
-  local root = document:root()
-  luaunit.assertEquals(root:text(),
-                       root:content())
-end
-
 function TestElement.test_get_attribute_raw()
-  local document = xmlua.XML.parse("<root class=\"A\"/>")
+  local document = xmlua.XML.parse([[<root class="A"/>]])
   local node_set = document:search("/root")
   luaunit.assertEquals(node_set[1]:get_attribute("class"),
                        "A")
 end
 
 function TestElement.test_get_attribute_property()
-  local document = xmlua.XML.parse("<root class=\"A\"/>")
+  local document = xmlua.XML.parse([[<root class="A"/>]])
   local node_set = document:search("/root")
   luaunit.assertEquals(node_set[1].class,
                        "A")
 end
 
 function TestElement.test_get_attribute_array_referece()
-  local document = xmlua.XML.parse("<root class=\"A\"/>")
+  local document = xmlua.XML.parse([[<root class="A"/>]])
   local node_set = document:search("/root")
   luaunit.assertEquals(node_set[1]["class"],
                        "A")
+end
+
+function TestElement.test_text_valid()
+  local document = xmlua.XML.parse([[<root>text1</root>]])
+  local node_set = document:search("/root")
+  luaunit.assertEquals(node_set[1]:text(),
+                       "text1")
+end
+
+function TestElement.test_text_invalid()
+  local document = xmlua.XML.parse([[<root><child1/></root>]])
+  local node_set = document:search("/root")
+  luaunit.assertEquals(node_set[1]:text(), "")
 end

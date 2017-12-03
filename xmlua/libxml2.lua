@@ -19,8 +19,6 @@ if not loaded then
   xml2 = ffi.load("libxml2.so.2")
 end
 
-libxml2.XML_SAX2_MAGIC = 0xDEEDBEAF
-
 local function __xmlFreeIsAvailable()
   local success, err = pcall(function()
       local func = xml2.__xmlFree
@@ -196,15 +194,14 @@ function libxml2.xmlGetProp(node, name)
 end
 
 function libxml2.xmlNodeGetContent(node)
-  local content = xml2.xmlNodeGetContent(node)
-  if content == ffi.NULL then
+  local value = xml2.xmlNodeGetContent(node)
+  if value == ffi.NULL then
     return nil
   end
-  local lua_string = ffi.string(content)
-  xmlFree(content)
+  local lua_string = ffi.string(value)
+  xmlFree(value)
   return lua_string
 end
-
 
 function libxml2.xmlBufferCreate()
   return ffi.gc(xml2.xmlBufferCreate(), xml2.xmlBufferFree)

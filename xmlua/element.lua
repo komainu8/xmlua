@@ -11,7 +11,6 @@ local ffi = require("ffi")
 local Serializable = require("xmlua.serializable")
 local Searchable = require("xmlua.searchable")
 
-local Node = require("xmlua.node")
 local Document = require("xmlua.document")
 local NodeSet = require("xmlua.node-set")
 
@@ -20,10 +19,13 @@ local methods = {}
 local metatable = {}
 function metatable.__index(element, key)
   return methods[key] or
-    Node[key] or
     Serializable[key] or
     Searchable[key] or
     methods.get_attribute(element, key)
+end
+
+function methods.text(self)
+  return libxml2.xmlNodeGetContent(self.node)
 end
 
 function methods.get_attribute(self, name)
@@ -85,10 +87,6 @@ function methods.children(self)
     child = libxml2.xmlNextElementSibling(child)
   end
   return NodeSet.new(children)
-end
-
-function methods.text(self)
-  return self:content()
 end
 
 function Element.new(document, node)
