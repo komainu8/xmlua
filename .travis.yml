@@ -17,8 +17,7 @@ matrix:
     - os: osx
       env: LUAROCKS_VERSION=2.4.3
       install:
-        - sudo
-          installer -pkg /Library/Developer/CommandLineTools/Packages/macOS_SDK_headers_for_macOS_10.14.pkg -target /
+        - xcode-select --install
         - brew update && brew install luajit libxml2
         - curl -O http://luarocks.github.io/luarocks/releases/luarocks-${LUAROCKS_VERSION}.tar.gz
         - tar xf luarocks-${LUAROCKS_VERSION}.tar.gz
